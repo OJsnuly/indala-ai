@@ -1,0 +1,62 @@
+# ========================================
+# inDala AI — .gitignore
+# ========================================
+
+# ── Environment ──
+.env
+.env.local
+.env.*.local
+
+# ── Node.js / Frontend ──
+node_modules/
+dist/
+build/
+.vite/
+*.tsbuildinfo
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+*.egg
+venv/
+.venv/
+env/
+.mypy_cache/
+.pytest_cache/
+
+# ── Go ──
+gateway/gateway
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+vendor/
+
+# ── OSRM Data ──
+*.osm.pbf
+osrm-data/*.osrm*
+!osrm-data/.gitkeep
+
+# ── IDE / Editor ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ── Docker ──
+docker-compose.override.yml
+
+# ── Logs ──
+*.log
+logs/

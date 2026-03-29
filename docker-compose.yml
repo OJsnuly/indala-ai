@@ -1,0 +1,79 @@
+services:
+  # ── OSRM Routing Backend ───────────────────────────────────
+  osrm-backend:
+    image: osrm/osrm-backend:latest
+    container_name: indala-osrm
+    volumes:
+      - ./osrm-data:/data
+    ports:
+      - "${OSRM_PORT:-5000}:5000"
+    command: >
+      bash -c "
+        if [ ! -f /data/kazakhstan-latest.osrm ]; then
+          echo '⚙️  Extracting OSM data...' &&
+          osrm-extract -p /opt/car.lua /data/kazakhstan-latest.osm.pbf &&
+          echo '⚙️  Partitioning...' &&
+          osrm-partition /data/kazakhstan-latest.osrm &&
+          echo '⚙️  Customizing...' &&
+          osrm-customize /data/kazakhstan-latest.osrm &&
+          echo '✅ OSRM data ready!';
+        else
+          echo '✅ OSRM data already processed, skipping.';
+        fi &&
+        echo '🚀 Starting OSRM on port 5000...' &&
+        osrm-routed --algorithm mld /data/kazakhstan-latest.osrm --port 5000
+      "
+    networks:
+      - indala-net
+    restart: unless-stopped
+
+  # ── Go API Gateway ─────────────────────────────────────────
+  go-api:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: indala-gateway
+    ports:
+      - "${GO_PORT:-8080}:8080"
+    environment:
+      - GO_PORT=8080
+      - ML_SERVICE_URL=http://python-ml:8000
+      - OSRM_URL=http://osrm-backend:5000
+    depends_on:
+      - osrm-backend
+      - python-ml
+    networks:
+      - indala-net
+    restart: unless-stopped
+
+  # ── Python ML Inference Service ────────────────────────────
+  python-ml:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: indala-ml
+    ports:
+      - "${PYTHON_PORT:-8000}:8000"
+    environment:
+      - PYTHON_PORT=8000
+    networks:
+      - indala-net
+    restart: unless-stopped
+
+  # ── React Frontend (nginx) ────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: indala-frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - go-api
+    networks:
+      - indala-net
+    restart: unless-stopped
+
+networks:
+  indala-net:
+    driver: bridge
