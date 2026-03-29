@@ -77,7 +77,7 @@ graph LR
 ### 1. Клонируем и настраиваем
 
 ```bash
-git clone https://github.com/your-username/indala-ai.git
+git clone https://github.com/OJsnuly/indala-ai.git
 cd indala-ai
 cp .env.example .env
 ```
@@ -170,12 +170,6 @@ indala-ai/
 | Сезонное бездорожье | +5..20 |
 
 **Формула субсидии:** `base_rate (45₸/км) × distance × (1 + score/100 × 1.5)`
-
----
-
-## 📜 Лицензия
-
-MIT License
 
 ---
 
