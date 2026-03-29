@@ -41,7 +41,7 @@
 
 ## 🏗️ Архитектура — Production-Ready MVP
 
-Микросервисная архитектура, реалистичная для реализации за 2 дня. Каждый компонент выбран по принципу: **максимум пользы при минимуме сложности**.
+Микросервисная архитектура.
 
 ```mermaid
 flowchart TB
@@ -123,7 +123,7 @@ Driver Feedback (crowd) ──┘
 ### 1. Клонируем и настраиваем
 
 ```bash
-git clone https://github.com/your-username/indala-ai.git
+git clone https://github.com/OJsnuly/indala-ai.git
 cd indala-ai
 cp .env.example .env
 ```
